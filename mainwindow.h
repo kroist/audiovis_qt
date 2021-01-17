@@ -24,19 +24,33 @@ private:
     const int FRAMERATE = 44100;
 
 
-    FftwPlan* plan;
+    FftwPlan* planL, *planR;
 
     pulseaudio_input* pulseInput;
+    int channels;
 
-    const int barWidth = 20;
-    int barCnt = 0;
+    int barCnt = 60;
     Ui::MainWindow *ui;
     std::thread *thr;
+    bool read_paused;
+    std::condition_variable cv_;
+    std::mutex m_;
+    std::vector<std::string> devices;
+    bool melspec = false;
+    int frequency_scale = 100;
 
     FILE *pipe;
 
 protected:
     void paintEvent(QPaintEvent*);
     void readFromPulse();
+    void indexChanged1(int);
+    void indexChanged2(int);
+    void checkbox(int);
+    void sliderChanged(int);
+    void sliderChanged2(int);
+    static void sourcelist_cb(pa_context*, const pa_source_info*, int, void*);
+    static void context_state_cb(pa_context*, void*);
+    int findDevices();
 };
 #endif // MAINWINDOW_H

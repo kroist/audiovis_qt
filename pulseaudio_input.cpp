@@ -1,11 +1,14 @@
 #include "pulseaudio_input.h"
+#include <iostream>
 
-pulseaudio_input::pulseaudio_input() {
+pulseaudio_input::pulseaudio_input(int channels, std::string device) {
     /* sample parameters */
     ss.format = PA_SAMPLE_S16LE;
-    ss.channels = 1;
+    ss.channels = channels;
     ss.rate = 44100;
-    s = pa_simple_new(NULL, "fftw", PA_STREAM_RECORD, "alsa_output.pci-0000_00_1f.3.analog-stereo.monitor", "ffting", &ss, NULL, &pb, NULL);
+    ///device is
+    std::cout << device << std::endl;
+    s = pa_simple_new(NULL, "fftw", PA_STREAM_RECORD, device.c_str(), "ffting", &ss, NULL, &pb, NULL);
 }
 
 pulseaudio_input::~pulseaudio_input() {
@@ -13,13 +16,17 @@ pulseaudio_input::~pulseaudio_input() {
 }
 
 void pulseaudio_input::read_buf() {
-    pa_simple_read(s, buf, sizeof(buf), NULL);
+    pa_simple_read(s, this->buf, sizeof(this->buf), NULL);
 }
 
 int pulseaudio_input::buf_size() {
     return BUFSZ;
 }
 
+int16_t pulseaudio_input::buf[] = {};
+
 int16_t pulseaudio_input::buf_get(int i) {
-    return buf[i];
+    return this->buf[i];
 }
+
+

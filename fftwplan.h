@@ -10,7 +10,7 @@ class FftwPlan
 public:
     FftwPlan(int insz, int outsz);
     ~FftwPlan();
-    void pulse_to_in(pulseaudio_input* pls);
+    void pulse_to_in(pulseaudio_input*, int);
     void exec();
     std::complex<double> get_fft(int i);
 private:

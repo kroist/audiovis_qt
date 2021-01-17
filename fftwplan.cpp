@@ -15,19 +15,10 @@ FftwPlan::~FftwPlan() {
     fftw_destroy_plan(plan);
 }
 
-void FftwPlan::pulse_to_in(pulseaudio_input* pls) {
+void FftwPlan::pulse_to_in(pulseaudio_input* pls, int strt) {
     int bufsz = pls->buf_size();
-    for (int i = 0; i < sizeIn; i++) {
-        if (sizeIn < bufsz) {
-            in[i] = pls->buf_get((int) (bufsz*(double)i/sizeIn ) ); /* almost windowing function */
-            in[i] /= 32766.0; /* rescale amplitude to [0...1] */
-        }
-        else {
-            if (i < bufsz)
-                in[i] = pls->buf_get(i)/32766.0;
-            else
-                in[i] = 0;
-        }
+    for (int i = strt; i < sizeIn; i+=2) {
+            in[i/2] = pls->buf_get(i)/32766.0;
     }
 
 }
